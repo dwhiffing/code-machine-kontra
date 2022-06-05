@@ -1,7 +1,8 @@
 import toggle from '../components/toggle'
+import light from '../components/light'
 import node from '../components/node'
 import connection from '../components/connection'
-const componentFactories = { toggle, node }
+const componentFactories = { toggle, node, light }
 
 const createSpace = () => {
   const systems = []
