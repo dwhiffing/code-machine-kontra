@@ -9,14 +9,6 @@ const createToggle = ({ key, x, y, value = 0 }) => {
     value,
     width: size,
     height: size,
-    toJSON: function () {
-      return {
-        key: this.key,
-        x: Math.floor(this.x),
-        y: Math.floor(this.y),
-        value: this.value || undefined,
-      }
-    },
     onDown: function () {
       if (this.draggable) return
       this.value = this.value ? 0 : 1
@@ -24,10 +16,9 @@ const createToggle = ({ key, x, y, value = 0 }) => {
     render: function () {
       this.context.strokeStyle = this.draggable ? 'gray' : 'white'
       this.context.fillStyle = this.draggable ? 'gray' : 'white'
-      this.context.lineWidth = size / 5
-
+      this.context.lineWidth = 2
       this.context.beginPath()
-      this.context.arc(0, 0, size, 0, 2 * Math.PI)
+      this.context.arc(size / 2, size / 2, size / 2, 0, 2 * Math.PI)
       this.context.stroke()
       this.value && this.context.fill()
     },

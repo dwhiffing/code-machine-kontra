@@ -1,23 +1,14 @@
 import { createComponent } from './index'
 
-const create = ({ key, x = 0, y = 0, ...rest }) => {
+const create = ({ ...rest }) => {
   return createComponent({
     ...rest,
-    key,
     x: 0,
     y: 0,
-    width: 1000,
-    height: 1000,
-    toJSON: function () {
-      return {
-        key: this.key,
-        x: Math.floor(this.x),
-        y: Math.floor(this.y),
-        value: this.value || undefined,
-      }
-    },
+    anchor: { x: 0, y: 0 },
+    width: 100,
+    height: 100,
     render: function () {
-      this.context.fillStyle = 'white'
       this.context.strokeStyle = 'white'
       this.context.lineWidth = 2
       this.context.beginPath()

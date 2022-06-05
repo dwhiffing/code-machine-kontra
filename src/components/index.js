@@ -7,7 +7,6 @@ export const createComponent = ({
   width,
   height,
   render,
-  updateValue,
   onMove,
   onUp,
   onDown,
@@ -25,6 +24,8 @@ export const createComponent = ({
     width,
     height,
     value,
+    ...rest,
+    anchor: { x: 0.5, y: 0.5 },
     render: function () {
       if (this.draggable) {
         this.context.fillStyle = '#fff'
@@ -32,14 +33,6 @@ export const createComponent = ({
       }
       render.call(this)
     },
-    updateValue: function (key, value) {
-      if (!updateValue) {
-        this[key] = value
-        return
-      }
-      updateValue.call(this, key, value)
-    },
-    ...rest,
     onMove: function (event) {
       onMove && onMove.call(this, event)
       if (!this.pointerDown) return
