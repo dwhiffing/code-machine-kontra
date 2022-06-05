@@ -1,4 +1,4 @@
-const create = () => {
+export default () => {
   const systems = []
   const entities = []
 
@@ -25,5 +25,3 @@ const create = () => {
     },
   }
 }
-
-export default create

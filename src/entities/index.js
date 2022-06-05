@@ -2,8 +2,7 @@ import toggle from './toggle'
 import light from './light'
 import node from './node'
 import connection from './connection'
+import battery from './battery'
 
-export { default as createEntityFactory } from './base'
-
-const entities = { toggle, node, light, connection }
-export const createEntityByType = (opts) => entities[opts.type](opts)
+const entities = { toggle, node, light, connection, battery, connection }
+export const createEntityByType = (opts) => entities[opts.type]?.(opts)

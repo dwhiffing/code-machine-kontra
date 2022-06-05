@@ -1,6 +1,6 @@
 import { track } from 'kontra'
 
-const create = (space) => {
+export default (space) => {
   const addEntity = (entity) => {
     track(entity)
   }
@@ -31,8 +31,6 @@ const create = (space) => {
     },
   }
 }
-
-export default create
 
 const drawDebug = (c) => {
   c.context.fillStyle = 'yellow'

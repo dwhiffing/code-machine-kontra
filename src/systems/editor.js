@@ -1,7 +1,7 @@
 import guify from 'guify'
-import createToggle from '../entities/toggle'
+import { createEntityByType } from '../entities'
 
-const create = (space, showGUI = false) => {
+export default (space, showGUI = false) => {
   let components = []
   let enabled = !!space.debug
   const enable = () => space.entities.forEach((c) => (c.draggable = enabled))
@@ -20,7 +20,7 @@ const create = (space, showGUI = false) => {
     if (!enabled) return
     let entity
     if (e.key === '1') {
-      entity = createToggle({ key: 'toggle-1', x: 300, y: 300 })
+      entity = createEntityByType({ key: 'toggle-1', x: 300, y: 300 })
       space.addEntity(entity)
     }
     // todo: add connection
@@ -77,5 +77,3 @@ const create = (space, showGUI = false) => {
     },
   }
 }
-
-export default create

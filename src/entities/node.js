@@ -1,4 +1,4 @@
-import { createEntityFactory } from './index'
+import createEntityFactory from './base'
 
 export default (opts) => {
   const size = 30
