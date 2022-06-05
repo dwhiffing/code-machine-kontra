@@ -6,8 +6,8 @@ const create = ({ ...rest }) => {
     x: 0,
     y: 0,
     anchor: { x: 0, y: 0 },
-    width: 100,
-    height: 100,
+    width: 0,
+    height: 0,
     render: function () {
       this.context.strokeStyle = 'white'
       this.context.lineWidth = 2

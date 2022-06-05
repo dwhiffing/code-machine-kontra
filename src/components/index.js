@@ -24,8 +24,8 @@ export const createComponent = ({
     width,
     height,
     value,
-    ...rest,
     anchor: { x: 0.5, y: 0.5 },
+    ...rest,
     render: function () {
       if (this.draggable) {
         this.context.fillStyle = '#fff'
@@ -36,10 +36,11 @@ export const createComponent = ({
     onMove: function (event) {
       onMove && onMove.call(this, event)
       if (!this.pointerDown) return
-
+      const scale = window.innerWidth / this.context.canvas.width
       if (this.draggable) {
-        const diffX = event.offsetX - this.clickX
-        const diffY = event.offsetY - this.clickY
+        console.log(event.offsetY)
+        const diffX = event.offsetX / scale - this.clickX
+        const diffY = event.offsetY / scale - this.clickY
         this.x = this.lastX + diffX
         this.y = this.lastY + diffY
       }
@@ -49,12 +50,13 @@ export const createComponent = ({
       this.pointerDown = false
     },
     onDown: function (event) {
+      const scale = window.innerWidth / this.context.canvas.width
       onDown && onDown.call(this, event)
       this.pointerDown = true
       this.lastX = this.x
       this.lastY = this.y
-      this.clickX = event.offsetX
-      this.clickY = event.offsetY
+      this.clickX = event.offsetX / scale
+      this.clickY = event.offsetY / scale
     },
   })
 }

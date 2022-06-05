@@ -6,20 +6,24 @@ import guify from 'guify'
 // when selected, can see all properties of entity in menu, including connections
 // can modify values and connections
 // once finished, can output updated values to console
-const createLevelEditorSystem = (space, x, y) => {
+const createLevelEditorSystem = (space, showGUI = false) => {
   let components = []
-  let enabled = false
-  const gui = new guify({
-    barMode: 'none',
-    align: 'left',
-    width: 300,
-    root: document.getElementById('gui'),
-  })
-  const addPanel = (opts) => components.push(gui.Register(opts))
+  let enabled = !!space.debug
+  const enable = () => space.entities.forEach((c) => (c.draggable = enabled))
+  let gui
+  if (showGUI) {
+    gui = new guify({
+      barMode: 'none',
+      align: 'left',
+      width: 300,
+      root: document.getElementById('gui'),
+    })
+  }
+  const addPanel = (opts) => showGUI && components.push(gui.Register(opts))
   const keydown = (e) => {
     if (e.key === 'p') {
       enabled = !enabled
-      space.entities.forEach((c) => (c.draggable = enabled))
+      enable()
       return
     }
     if (!enabled) return
@@ -48,6 +52,7 @@ const createLevelEditorSystem = (space, x, y) => {
 
   return {
     addEntity: (entity) => {
+      entity.draggable = enabled
       if (entity.type === 'component') {
         const minMax = ['min', 'max']
         const coords = ['x', 'y']

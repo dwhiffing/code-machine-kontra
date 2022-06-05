@@ -5,10 +5,21 @@ import createLevelEditorSystem from '../systems/editor'
 
 export const createLevel = () => {
   const components = [
-    { key: 'toggle-1', x: 587, y: 557, value: 0 },
-    { key: 'node-1', x: 750, y: 558 },
+    { key: 'toggle-1', x: 600, y: 100, value: 0 },
+    { key: 'node-1', x: 300, y: 100 },
+    { key: 'node-2', x: 900, y: 100 },
+    { key: 'node-3', x: 300, y: 300 },
+    { key: 'node-4', x: 900, y: 300 },
+    { key: 'light-1', x: 600, y: 300 },
   ]
-  const connections = ['toggle-1:node-1']
+  const connections = [
+    'node-1:toggle-1',
+    'toggle-1:node-2',
+    'node-2:node-4',
+    'node-4:light-1',
+    'light-1:node-3',
+    'node-3:node-1',
+  ]
 
   const space = createSpace()
   space.index = 0

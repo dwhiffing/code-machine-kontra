@@ -16,8 +16,12 @@ const create = function ({ key, x, y }) {
       if (this.draggable) return
     },
     render: function () {
-      this.context.drawImage(led, -(size / 2), -(size / 2))
-      this.context.drawImage(greenGlow, -(glowSize / 2), -(glowSize / 2))
+      this.context.drawImage(led, 0, 0)
+      this.context.drawImage(
+        greenGlow,
+        -((glowSize - size) / 2),
+        -((glowSize - size) / 2),
+      )
     },
   })
 }

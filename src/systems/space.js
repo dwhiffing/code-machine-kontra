@@ -33,6 +33,7 @@ const createSpace = () => {
   }
 
   return {
+    debug: true,
     createEntity,
     entities,
     addSystem: function (system) {
