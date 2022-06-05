@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "npx rollup -c -w rollup.config.js",
+    "start": "npx rollup -w -c rollup.config.js",
     "build": "npx rollup -c rollup.config.prod.js",
     "deploy": "npm run build; npx gh-pages -d dist",
     "postbuild": "node postbuild.js",

@@ -1,7 +1,7 @@
 import toggle from '../components/toggle'
-const componentFactories = {
-  toggle,
-}
+import node from '../components/node'
+import connection from '../components/connection'
+const componentFactories = { toggle, node }
 
 const createSpace = () => {
   const systems = []
@@ -9,26 +9,20 @@ const createSpace = () => {
 
   const createEntity = function (type = '', opts) {
     let entity
+    const _type = opts.type || type
+    const id =
+      entities.filter((e) => e.key?.match(new RegExp(_type))).length + 1
+    const key = opts.key || `${_type}-${id}`
     if (type === 'component') {
-      const id =
-        entities.filter((e) => e.key?.match(new RegExp(opts.type))).length + 1
-      entity = componentFactories[opts.type]({
-        key: opts.key || `${opts.type}-${id}`,
-        ...opts,
-      })
+      entity = componentFactories[opts.type]({ key, ...opts })
     } else if (type === 'connection') {
       const [input = '', output = ''] = opts.connection.split(':')
-
-      entity = {
-        input: {
-          key: input.split('.')[0],
-          prop: input.split('.').slice(1).join('.'),
-        },
-        output: {
-          key: output.split('.')[0],
-          prop: output.split('.').slice(1).join('.'),
-        },
-      }
+      entity = connection({
+        key,
+        ...opts,
+        input: entities.find((e) => e.key === input),
+        output: entities.find((e) => e.key === output),
+      })
     }
     if (entity) {
       entity.type = type

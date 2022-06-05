@@ -16,26 +16,6 @@ const createLevelEditorSystem = (space, x, y) => {
     root: document.getElementById('gui'),
   })
   const addPanel = (opts) => components.push(gui.Register(opts))
-  addPanel({
-    type: 'button',
-    label: 'Copy level',
-    action: () => {
-      const components = space.entities
-        .filter((e) => e.toJSON)
-        .map((e) => e.toJSON())
-      navigator.clipboard.writeText(
-        JSON.stringify({
-          components,
-          connections: space.entities
-            .filter((e) => e.type === 'connection')
-            .map(
-              (c) =>
-                `${c.input.key}.${c.input.prop}:${c.output.key}.${c.output.prop}`,
-            ),
-        }),
-      )
-    },
-  })
   const keydown = (e) => {
     if (e.key === 'p') {
       enabled = !enabled
@@ -132,30 +112,23 @@ const createLevelEditorSystem = (space, x, y) => {
         const { input, output } = entity
         addPanel({
           type: 'folder',
-          label: `${input.key}-${output.key}`,
+          label: `${input.key}:${output.key}`,
           open: false,
         })
-        addPanel({
-          type: 'text',
-          folder: `${input.key}-${output.key}`,
-          label: 'input.key',
-          object: input,
-          property: 'key',
-        })
-        addPanel({
-          type: 'text',
-          folder: `${input.key}-${output.key}`,
-          label: 'output.key',
-          object: output,
-          property: 'key',
-        })
-        addPanel({
-          type: 'text',
-          folder: `${input.key}-${output.key}`,
-          label: 'output.prop',
-          object: output,
-          property: 'prop',
-        })
+        // addPanel({
+        //   type: 'text',
+        //   folder: `${input.key}-${output}`,
+        //   label: 'input',
+        //   object: entity,
+        //   property: 'input',
+        // })
+        // addPanel({
+        //   type: 'text',
+        //   folder: `${input.key}-${output}`,
+        //   label: 'output',
+        //   object: entity,
+        //   property: 'output',
+        // })
       }
     },
     update: (time) => {},
