@@ -1,14 +1,13 @@
-import { createComponent } from './index'
+import { createEntityFactory } from './index'
 
-const createToggle = ({ key, x, y, value = 0 }) => {
+export default (opts) => {
   const size = 30
-  return createComponent({
-    key,
-    x,
-    y,
-    value,
+  return createEntityFactory({
+    ...opts,
+    type: 'toggle',
     width: size,
     height: size,
+    value: 0,
     onDown: function () {
       if (this.draggable) return
       this.value = this.value ? 0 : 1
@@ -24,5 +23,3 @@ const createToggle = ({ key, x, y, value = 0 }) => {
     },
   })
 }
-
-export default createToggle

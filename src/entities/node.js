@@ -1,11 +1,10 @@
-import { createComponent } from './index'
+import { createEntityFactory } from './index'
 
-const create = function ({ key, x, y }) {
+export default (opts) => {
   const size = 30
-  return createComponent({
-    key,
-    x,
-    y,
+  return createEntityFactory({
+    ...opts,
+    type: 'node',
     width: size,
     height: size,
     onDown: function () {
@@ -19,5 +18,3 @@ const create = function ({ key, x, y }) {
     },
   })
 }
-
-export default create

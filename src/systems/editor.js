@@ -1,23 +1,14 @@
 import guify from 'guify'
+import createToggle from '../entities/toggle'
 
-// press button to toggle edit mode
-// when in edit mode, clicking selects an entity
-// draggning moves it around
-// when selected, can see all properties of entity in menu, including connections
-// can modify values and connections
-// once finished, can output updated values to console
-const createLevelEditorSystem = (space, showGUI = false) => {
+const create = (space, showGUI = false) => {
   let components = []
   let enabled = !!space.debug
   const enable = () => space.entities.forEach((c) => (c.draggable = enabled))
   let gui
   if (showGUI) {
-    gui = new guify({
-      barMode: 'none',
-      align: 'left',
-      width: 300,
-      root: document.getElementById('gui'),
-    })
+    const root = document.getElementById('gui')
+    gui = new guify({ barMode: 'none', align: 'left', width: 300, root })
   }
   const addPanel = (opts) => showGUI && components.push(gui.Register(opts))
   const keydown = (e) => {
@@ -29,19 +20,11 @@ const createLevelEditorSystem = (space, showGUI = false) => {
     if (!enabled) return
     let entity
     if (e.key === '1') {
-      entity = space.createEntity('component', {
-        type: 'toggle',
-        x: 300,
-        y: 300,
-      })
+      entity = createToggle({ key: 'toggle-1', x: 300, y: 300 })
+      space.addEntity(entity)
     }
-    if (e.key === '0') {
-      const connectionString = window.prompt(
-        'Enter new connection',
-        'knob-1.value:gridScreen-1.x',
-      )
-      space.addEntity(connectionString)
-    }
+    // todo: add connection
+    // todo: add node
     if (entity) {
       entity.draggable = true
       entity.pointerDown = true
@@ -50,94 +33,43 @@ const createLevelEditorSystem = (space, showGUI = false) => {
 
   document.addEventListener('keydown', keydown)
 
+  const addEntity = (entity) => {
+    entity.draggable = enabled
+    const coords = ['x', 'y']
+
+    addPanel({
+      type: 'folder',
+      label: entity.key,
+      open: false,
+    })
+
+    coords.forEach((key) => {
+      if (typeof entity[key] !== 'number') return
+      addPanel({
+        type: 'range',
+        label: key,
+        property: key,
+        min: 0,
+        max: 1000,
+        folder: entity.key,
+        object: entity,
+      })
+    })
+
+    entity.value &&
+      addPanel({
+        type: 'display',
+        label: 'value',
+        property: 'value',
+        folder: entity.key,
+        object: entity,
+      })
+  }
+
   return {
-    addEntity: (entity) => {
-      entity.draggable = enabled
-      if (entity.type === 'component') {
-        const minMax = ['min', 'max']
-        const coords = ['x', 'y']
-        const screens = ['active', 'goal']
-
-        addPanel({
-          type: 'folder',
-          label: entity.key,
-          open: false,
-        })
-
-        coords.forEach((key) => {
-          if (typeof entity[key] !== 'number') return
-          addPanel({
-            type: 'range',
-            label: key,
-            property: key,
-            min: 0,
-            max: 1000,
-            folder: entity.key,
-            object: entity,
-          })
-        })
-
-        entity.value &&
-          addPanel({
-            type: 'display',
-            label: 'value',
-            property: 'value',
-            folder: entity.key,
-            object: entity,
-          })
-
-        minMax.forEach((key) => {
-          if (typeof entity[key] !== 'number') return
-          addPanel({
-            type: 'range',
-            label: key,
-            property: key,
-            folder: entity.key,
-            object: entity,
-          })
-        })
-
-        screens.forEach((screenKey) => {
-          if (!entity[screenKey]) return
-          Object.keys(entity[screenKey]).forEach((key) => {
-            addPanel({
-              type: key.match(/^x$|^y$|amplitude|wavelength/)
-                ? 'range'
-                : key.match(/^color$/)
-                ? 'color'
-                : 'display',
-              label: `${screenKey}-${key}`,
-              property: key,
-              folder: entity.key,
-              object: entity[screenKey],
-            })
-          })
-        })
-      } else if (entity.type === 'connection') {
-        const { input, output } = entity
-        addPanel({
-          type: 'folder',
-          label: `${input.key}:${output.key}`,
-          open: false,
-        })
-        // addPanel({
-        //   type: 'text',
-        //   folder: `${input.key}-${output}`,
-        //   label: 'input',
-        //   object: entity,
-        //   property: 'input',
-        // })
-        // addPanel({
-        //   type: 'text',
-        //   folder: `${input.key}-${output}`,
-        //   label: 'output',
-        //   object: entity,
-        //   property: 'output',
-        // })
-      }
-    },
     update: (time) => {},
     render: (time) => {},
+    addEntity,
     shutdown: () => {
       components.forEach((c) => gui.Remove(c))
       document.getElementById('gui').innerHTML = ''
@@ -146,4 +78,4 @@ const createLevelEditorSystem = (space, showGUI = false) => {
   }
 }
 
-export default createLevelEditorSystem
+export default create

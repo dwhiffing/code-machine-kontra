@@ -1,12 +1,12 @@
 import { init, initPointer, GameLoop } from 'kontra'
-import { createLevel } from './screens/level'
+import createGameScreen from './screens/game'
 
 init()
 initPointer()
 
-let screen = createLevel()
+const screen = createGameScreen()
 
 GameLoop({
-  update: () => screen && screen.space.update(),
-  render: () => screen && screen.space.render(),
+  update: () => screen.space.update(),
+  render: () => screen.space.render(),
 }).start()
