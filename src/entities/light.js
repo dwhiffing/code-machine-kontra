@@ -2,7 +2,7 @@ import createEntityFactory from './base'
 import { createLedSprite, createGlow } from '../led'
 
 export default (opts) => {
-  const size = 35
+  const size = 50
   const size2 = 150
   const led = createLedSprite(size)
   const glow = createGlow(0, 1, 0, size2)

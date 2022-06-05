@@ -1,7 +1,7 @@
 import createEntityFactory from './base'
 
 export default (opts) => {
-  const size = 30
+  const size = 60
   return createEntityFactory({
     ...opts,
     type: 'toggle',
@@ -13,13 +13,15 @@ export default (opts) => {
       this.value = this.value ? 0 : 1
     },
     render: function () {
-      this.context.strokeStyle = this.draggable ? 'gray' : 'white'
-      this.context.fillStyle = this.draggable ? 'gray' : 'white'
+      this.context.fillStyle = this.draggable
+        ? 'gray'
+        : this.value
+        ? 'white'
+        : '#333'
       this.context.lineWidth = 2
       this.context.beginPath()
       this.context.arc(size / 2, size / 2, size / 2, 0, 2 * Math.PI)
-      this.context.stroke()
-      this.value && this.context.fill()
+      this.context.fill()
     },
   })
 }

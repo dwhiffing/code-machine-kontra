@@ -3,6 +3,9 @@ import { track } from 'kontra'
 export default (space) => {
   const addEntity = (entity) => {
     track(entity)
+    space.entities = space.entities.sort((a, b) =>
+      a.type === 'connection' ? -1 : b.type === 'connection' ? 1 : 0,
+    )
   }
 
   const update = () => {

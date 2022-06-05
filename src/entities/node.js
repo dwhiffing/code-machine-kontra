@@ -1,7 +1,7 @@
 import createEntityFactory from './base'
 
 export default (opts) => {
-  const size = 30
+  const size = 15
   return createEntityFactory({
     ...opts,
     type: 'node',
@@ -12,18 +12,13 @@ export default (opts) => {
       if (this.draggable) return
     },
     render: function () {
-      this.context.strokeStyle = this.draggable
-        ? 'gray'
-        : this.value
-        ? 'red'
-        : 'white'
       this.context.fillStyle = this.draggable
-        ? 'gray'
+        ? 'white'
         : this.value
-        ? 'red'
-        : 'white'
+        ? 'yellow'
+        : '#999'
       this.context.lineWidth = 2
-      this.context.strokeRect(0, 0, size, size)
+      this.context.fillRect(0, 0, size, size)
     },
   })
 }

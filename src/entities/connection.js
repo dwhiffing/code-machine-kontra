@@ -16,8 +16,8 @@ export default (opts) =>
         this.output.value = this.value
     },
     render: function () {
-      this.context.strokeStyle = this.value ? 'red' : 'white'
-      this.context.lineWidth = 2
+      this.context.strokeStyle = this.value ? '#555500' : '#333'
+      this.context.lineWidth = 4
 
       this.context.beginPath()
       this.context.moveTo(this.input.x, this.input.y)
