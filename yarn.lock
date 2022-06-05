@@ -652,10 +652,10 @@ kind-of@^3.0.2:
   dependencies:
     is-buffer "^1.1.5"
 
-kontra@^7.0.0:
-  version "7.3.1"
-  resolved "https://registry.yarnpkg.com/kontra/-/kontra-7.3.1.tgz#fa32d751041a0afcb21472006322808177ece77f"
-  integrity sha512-Qv8VzxI9GIpQi7u+2GtAggpstSvByB0lqfuksoOiGMdjBRM6do+I4v5OJhWX/q2d9PIW9PGgdk7j+vN53SpqIQ==
+kontra@^8.0.0:
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/kontra/-/kontra-8.0.0.tgz#661b46b650ed86c9c1a71e723b54dc2a7ab1e30b"
+  integrity sha512-7Go/K4S+6gtyillSKSkSlNq46neuIWGvof9PYyzBwiBKGrs+1GHzsDknaeIID3GulV+sK1oKcV0hB2CyyO7ePQ==
 
 lazystream@^1.0.0:
   version "1.0.1"

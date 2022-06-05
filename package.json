@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "kontra": "^7.0.0"
+    "kontra": "^8.0.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^15.0.0",
