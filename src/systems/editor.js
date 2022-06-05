@@ -3,8 +3,8 @@ import { createEntityByType } from '../entities'
 
 export default (space, showGUI = false) => {
   let components = []
-  let enabled = !!space.debug
-  const enable = () => space.entities.forEach((c) => (c.draggable = enabled))
+  const enable = () =>
+    space.entities.forEach((c) => (c.draggable = space.debug))
   let gui
   if (showGUI) {
     const root = document.getElementById('gui')
@@ -13,11 +13,11 @@ export default (space, showGUI = false) => {
   const addPanel = (opts) => showGUI && components.push(gui.Register(opts))
   const keydown = (e) => {
     if (e.key === 'p') {
-      enabled = !enabled
+      space.debug = !space.debug
       enable()
       return
     }
-    if (!enabled) return
+    if (!space.debug) return
     let entity
     if (e.key === '1') {
       entity = createEntityByType({ key: 'toggle-1', x: 300, y: 300 })
@@ -34,7 +34,7 @@ export default (space, showGUI = false) => {
   document.addEventListener('keydown', keydown)
 
   const addEntity = (entity) => {
-    entity.draggable = enabled
+    entity.draggable = space.debug
     const coords = ['x', 'y']
 
     addPanel({

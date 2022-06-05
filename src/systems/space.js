@@ -3,8 +3,9 @@ export default () => {
   const entities = []
 
   return {
-    debug: true,
+    // debug: true,
     entities,
+    systems,
     addSystem: (system) => {
       systems.push(system)
     },

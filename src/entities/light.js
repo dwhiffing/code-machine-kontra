@@ -13,12 +13,13 @@ export default (opts) => {
     type: 'light',
     width: size,
     height: size,
+    value: 0,
     onDown: function () {
       if (this.draggable) return
     },
     render: function () {
       this.context.drawImage(led, 0, 0)
-      this.context.drawImage(glow, offset, offset)
+      if (this.value) this.context.drawImage(glow, offset, offset)
     },
   })
 }

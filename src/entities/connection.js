@@ -9,8 +9,14 @@ export default (opts) =>
     anchor: { x: 0, y: 0 },
     width: 0,
     height: 0,
+    timer: 10,
+    update: function () {
+      this.value = this.input.value ? 1 : 0
+      if (this.output.type === 'node' || this.output.type === 'light')
+        this.output.value = this.value
+    },
     render: function () {
-      this.context.strokeStyle = 'white'
+      this.context.strokeStyle = this.value ? 'red' : 'white'
       this.context.lineWidth = 2
 
       this.context.beginPath()

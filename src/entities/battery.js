@@ -11,6 +11,7 @@ export default (opts) => {
   return createEntityFactory({
     ...opts,
     type: 'battery',
+    value: 1,
     width: size,
     height: size,
     onDown: function () {
