@@ -31,21 +31,22 @@ export default () => {
 
 const LEVEL = {
   entities: [
+    { key: 'cell-1', value: 1, x: 300, y: 375 },
     { key: 'node-1', x: 300, y: 200 },
-    { key: 'node-3', x: 300, y: 600 },
-    { key: 'battery-1', x: 300, y: 400 },
     { key: 'toggle-1', x: 700, y: 200 },
     { key: 'node-2', x: 1100, y: 200 },
-    { key: 'node-4', x: 1100, y: 600 },
     { key: 'light-1', x: 1100, y: 400 },
+    { key: 'node-4', x: 1100, y: 600 },
+    { key: 'node-3', x: 300, y: 600 },
+    { key: 'cell-2', value: -1, x: 300, y: 425 },
   ],
   connections: [
-    'battery-1:node-1',
+    'cell-1:node-1',
     'node-1:toggle-1',
     'toggle-1:node-2',
     'node-2:light-1',
     'light-1:node-4',
     'node-4:node-3',
-    'node-3:battery-1',
+    'node-3:cell-2',
   ],
 }

@@ -1,15 +1,44 @@
 import { track } from 'kontra'
 
 export default (space) => {
+  const graph = new Map()
+
   const addEntity = (entity) => {
     track(entity)
     space.entities = space.entities.sort((a, b) =>
       a.type === 'connection' ? -1 : b.type === 'connection' ? 1 : 0,
     )
+
+    if (entity.type === 'connection') {
+      graph.get(entity.input.key).push(entity.output.key)
+      graph.get(entity.output.key).push(entity.input.key)
+    } else {
+      graph.set(entity.key, [])
+    }
+  }
+
+  const checkPower = () => {
+    const path =
+      dfs(graph)?.map((k) => space.entities.find((e) => e.key === k)) || []
+    const broken = path.some((node) => node.type === 'toggle' && !node.value)
+
+    path.forEach((node, i) => {
+      if (node && node.type !== 'toggle' && node.type !== 'cell') {
+        node.value = broken ? 0 : 1
+      }
+      if (i > 0) {
+        const connectionKey = `connection-${path[i - 1].key}:${node.key}`
+        const connection = space.entities.find((e) => e.key === connectionKey)
+        connection.value = broken ? 0 : 1
+      }
+    })
   }
 
   const update = () => {
     space.entities.forEach((c) => c.update())
+
+    // TODO: only check power when state changes?
+    checkPower()
   }
 
   const render = () => {
@@ -42,4 +71,25 @@ const drawDebug = (c) => {
   c.context.arc(c.x, c.y, 3, 0, 2 * Math.PI)
   c.context.fill()
   c.context.strokeRect(c.x - c.width / 2, c.y - c.height / 2, c.width, c.height)
+}
+
+const dfs = (
+  graph,
+  start = 'cell-1',
+  target = 'cell-2',
+  visited = new Set(),
+) => {
+  visited.add(start)
+
+  const destinations = graph.get(start)
+  for (const destination of destinations) {
+    if (destination === target) {
+      visited.add(destination)
+      return [...visited]
+    }
+
+    if (!visited.has(destination)) {
+      return dfs(graph, destination, target, visited)
+    }
+  }
 }

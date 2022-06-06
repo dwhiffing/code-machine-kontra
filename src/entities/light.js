@@ -5,7 +5,7 @@ export default (opts) => {
   const size = 50
   const size2 = 150
   const led = createLedSprite(size)
-  const glow = createGlow(0, 1, 0, size2)
+  const glow = createGlow(1, 1, 0, size2)
   const offset = -((size2 - size) / 2)
 
   return createEntityFactory({
