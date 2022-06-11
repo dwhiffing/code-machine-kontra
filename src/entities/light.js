@@ -15,7 +15,7 @@ export default (opts) => {
     height: size,
     value: 0,
     onDown: function () {
-      if (this.draggable) return
+      if (this.editable) return
     },
     render: function () {
       this.context.drawImage(led, 0, 0)

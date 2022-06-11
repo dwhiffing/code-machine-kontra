@@ -1,8 +1,8 @@
-import toggle from './toggle'
+import _switch from './switch'
 import light from './light'
 import node from './node'
-import connection from './connection'
+import wire from './wire'
 import cell from './cell'
 
-const entities = { toggle, node, light, connection, cell, connection }
+const entities = { switch: _switch, node, light, wire, cell, wire }
 export const createEntityByType = (opts) => entities[opts.type]?.(opts)

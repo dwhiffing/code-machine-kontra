@@ -3,30 +3,48 @@ import { createEntityByType } from '../entities'
 
 export default (space, showGUI = false) => {
   let components = []
-  const enable = () =>
-    space.entities.forEach((c) => (c.draggable = space.debug))
+  const enable = () => {
+    space.entities.forEach(
+      (c) => (c.editable = space.mode === (c.type === 'wire' ? 2 : 1)),
+    )
+  }
   let gui
   if (showGUI) {
     const root = document.getElementById('gui')
     gui = new guify({ barMode: 'none', align: 'left', width: 300, root })
   }
+  // editor should have modes:
+  // disabled, nodes, wires
+  // tab to switch between modes
+  // when in node mode, can create/destroy/move nodes
+  //   clicking and dragging on a node moves it around
+  //   clicking on it toggles selection, hitting delete while selected deletes
+  //   when deleting, should also remove any wires to this node
+  //   should be able to box select and delete multiple eventually
+  //   keyboard allows creation of different entities (1 for node, 2 for cell, 3 for switch, 4 for light)
+  // when in wire mode, can create/destroy wires
+  //   clicking on a wire selects it (need to change wires to have appropriate bounding box?)
+  //   clicking on a node selects it, clicking a different node creates a wire and selects that node
+  // clicking nothing deselects
   const addPanel = (opts) => showGUI && components.push(gui.Register(opts))
   const keydown = (e) => {
     if (e.key === 'p') {
-      space.debug = !space.debug
+      if (++space.mode > 2) {
+        space.mode = 0
+      }
       enable()
       return
     }
-    if (!space.debug) return
+    if (space.mode === 0) return
     let entity
     if (e.key === '1') {
-      entity = createEntityByType({ key: 'toggle-1', x: 300, y: 300 })
+      entity = createEntityByType({ key: 'switch-1', x: 300, y: 300 })
       space.addEntity(entity)
     }
-    // todo: add connection
+    // todo: add wire
     // todo: add node
     if (entity) {
-      entity.draggable = true
+      entity.editable = true
       entity.pointerDown = true
     }
   }
@@ -34,7 +52,7 @@ export default (space, showGUI = false) => {
   document.addEventListener('keydown', keydown)
 
   const addEntity = (entity) => {
-    entity.draggable = space.debug
+    entity.editable = space.mode > 0
     const coords = ['x', 'y']
 
     addPanel({

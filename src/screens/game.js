@@ -14,12 +14,12 @@ export default () => {
     space.addEntity(createEntityByType({ ...component, type }))
   })
 
-  LEVEL.connections.forEach((connection) => {
-    const [input = '', output = ''] = connection.split(':')
+  LEVEL.wires.forEach((wire) => {
+    const [input = '', output = ''] = wire.split(':')
     space.addEntity(
       createEntityByType({
-        key: `connection-${connection}`,
-        type: 'connection',
+        key: `wire-${wire}`,
+        type: 'wire',
         input: space.entities.find((e) => e.key === input),
         output: space.entities.find((e) => e.key === output),
       }),
@@ -33,17 +33,17 @@ const LEVEL = {
   entities: [
     { key: 'cell-1', value: 1, x: 300, y: 375 },
     { key: 'node-1', x: 300, y: 200 },
-    { key: 'toggle-1', x: 700, y: 200 },
+    { key: 'switch-1', x: 700, y: 200 },
     { key: 'node-2', x: 1100, y: 200 },
     { key: 'light-1', x: 1100, y: 400 },
     { key: 'node-4', x: 1100, y: 600 },
     { key: 'node-3', x: 300, y: 600 },
     { key: 'cell-2', value: -1, x: 300, y: 425 },
   ],
-  connections: [
+  wires: [
     'cell-1:node-1',
-    'node-1:toggle-1',
-    'toggle-1:node-2',
+    'node-1:switch-1',
+    'switch-1:node-2',
     'node-2:light-1',
     'light-1:node-4',
     'node-4:node-3',

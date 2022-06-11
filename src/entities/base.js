@@ -10,14 +10,20 @@ export default (opts) =>
     ...opts,
     render: function () {
       opts.render?.call(this)
-      if (!this.draggable) return
+      if (!this.editable) return
 
       this.context.fillStyle = '#fff'
-      this.context.fillText(this.key, 0, -10)
+      const textWidth = this.context.measureText(this.key).width
+      let pos = this.width / 2 - textWidth / 2
+      if (this.type === 'wire') {
+        pos = textWidth / 2
+        pos *= -1
+      }
+      this.context.fillText(this.key, pos, -10)
     },
     onMove: function (event) {
       opts.onMove?.call(this, event)
-      if (!this.draggable || !this.clickPos) return
+      if (!this.editable || !this.clickPos) return
 
       const scale = window.innerWidth / this.context.canvas.width
       this.x = this.clickPos.x + (event.offsetX / scale - this.clickPos.offsetX)

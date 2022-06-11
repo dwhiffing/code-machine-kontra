@@ -6,10 +6,10 @@ export default (space) => {
   const addEntity = (entity) => {
     track(entity)
     space.entities = space.entities.sort((a, b) =>
-      a.type === 'connection' ? -1 : b.type === 'connection' ? 1 : 0,
+      a.type === 'wire' ? -1 : b.type === 'wire' ? 1 : 0,
     )
 
-    if (entity.type === 'connection') {
+    if (entity.type === 'wire') {
       graph.get(entity.input.key).push(entity.output.key)
       graph.get(entity.output.key).push(entity.input.key)
     } else {
@@ -20,16 +20,16 @@ export default (space) => {
   const checkPower = () => {
     const path =
       dfs(graph)?.map((k) => space.entities.find((e) => e.key === k)) || []
-    const broken = path.some((node) => node.type === 'toggle' && !node.value)
+    const broken = path.some((node) => node.type === 'switch' && !node.value)
 
     path.forEach((node, i) => {
-      if (node && node.type !== 'toggle' && node.type !== 'cell') {
+      if (node && node.type !== 'switch' && node.type !== 'cell') {
         node.value = broken ? 0 : 1
       }
       if (i > 0) {
-        const connectionKey = `connection-${path[i - 1].key}:${node.key}`
-        const connection = space.entities.find((e) => e.key === connectionKey)
-        connection.value = broken ? 0 : 1
+        const connectionKey = `wire-${path[i - 1].key}:${node.key}`
+        const wire = space.entities.find((e) => e.key === connectionKey)
+        wire.value = broken ? 0 : 1
       }
     })
   }
