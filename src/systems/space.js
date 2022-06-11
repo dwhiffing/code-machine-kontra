@@ -1,7 +1,5 @@
-import { depthSort, Scene } from 'kontra'
+import { Scene } from 'kontra'
 export default () => {
-  const systems = []
-  let entities = []
   const scene = Scene({
     id: 'game',
     objects: [],
@@ -12,35 +10,36 @@ export default () => {
   return {
     mode: 0,
     debug: true,
-    entities,
-    systems,
-    addSystem: (system) => {
-      systems.push(system)
+    entities: [],
+    systems: [],
+    scene,
+    addSystem: function (system) {
+      this.systems.push(system)
     },
-    addEntity: (entity) => {
+    addEntity: function (entity) {
       if (!entity) return
 
-      entities.push(entity)
-      systems.forEach((system) => system.addEntity(entity))
-      scene.add(entity)
+      this.entities.push(entity)
+      this.systems.forEach((system) => system.addEntity(entity))
+      this.scene.add(entity)
     },
     removeEntity: function (entity) {
       if (!entity) return
 
       this.entities = this.entities.filter((e) => e !== entity)
-      scene.remove(entity)
-      systems.forEach((system) => system.removeEntity(entity))
+      this.scene.remove(entity)
+      this.systems.forEach((system) => system.removeEntity(entity))
     },
-    update: () => {
-      systems.forEach((c) => c.update())
+    update: function () {
+      this.systems.forEach((c) => c.update())
     },
-    render: () => {
-      scene.render()
-      systems.forEach((c) => c.render())
+    render: function () {
+      this.scene.render()
+      this.systems.forEach((c) => c.render())
     },
-    shutdown: () => {
-      scene.destroy()
-      systems.forEach((system) => system.shutdown && system.shutdown())
+    shutdown: function () {
+      this.scene.destroy()
+      this.systems.forEach((system) => system.shutdown && system.shutdown())
     },
   }
 }
