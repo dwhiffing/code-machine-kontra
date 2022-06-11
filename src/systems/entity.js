@@ -27,10 +27,13 @@ export default (space) => {
   }
 
   const checkPower = () => {
+    // TODO: not dealing with forks properly
+    space.entities
+      .filter((e) => e.type !== 'switch')
+      .forEach((e) => (e.value = 0))
     const path =
       dfs(graph)?.map((k) => space.entities.find((e) => e.key === k)) || []
     const broken = path.some((node) => node?.type === 'switch' && !node.value)
-
     path.forEach((node, i) => {
       if (node && node.type !== 'switch' && node.type !== 'cell') {
         node.value = broken ? 0 : 1
@@ -53,7 +56,7 @@ export default (space) => {
   const render = () => {
     if (!space.debug) return
     space.entities.forEach((c) => {
-      if (space.mode === 1) drawDebug(c)
+      if (space.mode === 1 && c.type !== 'wire') drawDebug(c)
       if (space.mode === 2 && c.type === 'wire') drawDebug(c)
     })
   }

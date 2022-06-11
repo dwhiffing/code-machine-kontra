@@ -1,43 +1,49 @@
-import guify from 'guify'
 import { onPointer } from 'kontra'
 import { createEntityByType } from '../entities'
 
-export default (space, showGUI = false) => {
+export default (space) => {
   let components = []
   const enable = () => {
     space.entities.forEach((c) => {
       c.editable = space.mode === (c.type === 'wire' ? 2 : 1)
+      c.wireable = space.mode === 2
       c.selected = false
       c.interactable = space.mode === 0
     })
   }
 
   onPointer('up', function (e, object) {
-    if (space.mode !== 0)
+    if (space.mode !== 0) {
+      // wiring mode
+      if (object && space.mode === 2 && object.type !== 'wire') {
+        const selected = space.entities.find((o) => o.selected)
+
+        // select input node for wire
+        if (!selected) {
+          object.selected = !object.selected
+          return
+        }
+
+        // select output node for wire and created
+        space.addEntity(
+          createEntityByType({
+            key: `wire-${selected.key}:${object.key}`,
+            type: 'wire',
+            input: selected,
+            output: object,
+          }),
+        )
+      }
+
+      // deselect all
       space.entities.forEach((c) => {
         if (object !== c) c.selected = false
       })
+    }
   })
-  let gui
-  if (showGUI) {
-    const root = document.getElementById('gui')
-    gui = new guify({ barMode: 'none', align: 'left', width: 300, root })
-  }
-  // editor should have modes:
-  // disabled, nodes, wires
-  // tab to switch between modes
-  // when in node mode, can create/destroy/move nodes
-  //   clicking and dragging on a node moves it around
-  //   clicking on it toggles selection, hitting delete while selected deletes
-  //   when deleting, should also remove any wires to this node
-  //   should be able to box select and delete multiple eventually
-  //   keyboard allows creation of different entities (1 for node, 2 for cell, 3 for switch, 4 for light)
-  // when in wire mode, can create/destroy wires
-  //   clicking on a wire selects it (need to change wires to have appropriate bounding box?)
-  //   clicking on a node selects it, clicking a different node creates a wire and selects that node
-  // clicking nothing deselects
-  const addPanel = (opts) => showGUI && components.push(gui.Register(opts))
+
   const keydown = (e) => {
+    // toggle mode: normal, edit, wire
     if (e.key === 'p') {
       if (++space.mode > 2) {
         space.mode = 0
@@ -45,6 +51,8 @@ export default (space, showGUI = false) => {
       enable()
       return
     }
+
+    // delete selected
     if (e.key === 'Backspace') {
       const selected = space.entities.filter((c) => c.selected)
       selected.forEach((e) => {
@@ -55,61 +63,50 @@ export default (space, showGUI = false) => {
         space.removeEntity(e)
       })
     }
+
     if (space.mode === 0) return
+
+    // create nodes
     let entity
+    let _type
     if (e.key === '1') {
-      entity = createEntityByType({ key: 'switch-1', x: 300, y: 300 })
-      space.addEntity(entity)
+      _type = 'node'
     }
-    // todo: add wire
-    // todo: add node
+    if (e.key === '2') {
+      _type = 'switch'
+    }
+    if (e.key === '3') {
+      _type = 'light'
+    }
+    if (_type) {
+      const sameType = space.entities.filter((e) => e.type === _type)
+      const last = sameType[sameType.length - 1]
+      const key = last ? +last.key.split('-')[1] + 1 : 0
+      entity = createEntityByType({
+        key: `${_type}-${key}`,
+        type: _type,
+        x: 0,
+        y: 0,
+      })
+    }
     if (entity) {
+      space.addEntity(entity)
       entity.editable = true
-      entity.pointerDown = true
+      entity.interactable = false
+      entity.wireable = false
+      entity.placing = true
+      entity.onDown({ offsetX: 0, offsetY: 0 })
+      entity.value = 0
     }
   }
 
   document.addEventListener('keydown', keydown)
 
-  const removeEntity = (entity) => {}
-  const addEntity = (entity) => {
-    entity.editable = space.mode > 0
-    const coords = ['x', 'y']
-
-    addPanel({
-      type: 'folder',
-      label: entity.key,
-      open: false,
-    })
-
-    coords.forEach((key) => {
-      if (typeof entity[key] !== 'number') return
-      addPanel({
-        type: 'range',
-        label: key,
-        property: key,
-        min: 0,
-        max: 1000,
-        folder: entity.key,
-        object: entity,
-      })
-    })
-
-    entity.value &&
-      addPanel({
-        type: 'display',
-        label: 'value',
-        property: 'value',
-        folder: entity.key,
-        object: entity,
-      })
-  }
-
   return {
     update: (time) => {},
     render: (time) => {},
-    addEntity,
-    removeEntity,
+    removeEntity: (entity) => {},
+    addEntity: (entity) => (entity.editable = space.mode > 0),
     shutdown: () => {
       components.forEach((c) => gui.Remove(c))
       document.getElementById('gui').innerHTML = ''

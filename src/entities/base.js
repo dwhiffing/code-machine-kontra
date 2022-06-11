@@ -8,7 +8,9 @@ export default (opts) =>
     clickY: 0,
     anchor: { x: 0.5, y: 0.5 },
     editable: false,
+    wireable: false,
     selected: false,
+    placing: false,
     interactable: true,
     getTextOffset: function () {
       const textWidth = this.context.measureText(this.key).width
@@ -37,20 +39,26 @@ export default (opts) =>
     onUp: function (event) {
       opts.onUp?.call(this, event)
       if (this.editable) {
+        const scale = window.innerWidth / this.context.canvas.width
         const diffPos = {
-          x: this._clickPos.x - event.offsetX,
-          y: this._clickPos.y - event.offsetY,
+          x: this.clickPos.offsetX - event.offsetX / scale,
+          y: this.clickPos.offsetY - event.offsetY / scale,
         }
         const diff = Math.abs(diffPos.x) + Math.abs(diffPos.y)
         if (diff === 0) {
+          // don't select if we're about to place
+          if (this.placing) {
+            this.placing = false
+            this.clickPos = null
+            return
+          }
           this.selected = !this.selected
         }
       }
       this.clickPos = null
     },
     onDown: function (event) {
-      this._clickPos = { x: event.offsetX, y: event.offsetY }
-      opts.onDown?.call(this, event)
+      opts.onDown?.call(this)
 
       const scale = window.innerWidth / this.context.canvas.width
       this.clickPos = {
