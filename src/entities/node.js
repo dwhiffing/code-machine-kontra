@@ -13,8 +13,12 @@ export default (opts) => {
     },
     render: function () {
       this.context.fillStyle = this.value ? 'yellow' : '#999'
-      this.context.lineWidth = 2
+      this.context.lineWidth = 5
       this.context.fillRect(0, 0, size, size)
+      if (this.selected) {
+        this.context.strokeStyle = 'white'
+        this.context.strokeRect(0, 0, size, size)
+      }
     },
   })
 }

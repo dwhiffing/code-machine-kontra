@@ -25,6 +25,14 @@ export default (opts) => {
         offset,
         offset,
       )
+      if (this.selected) {
+        this.context.beginPath()
+        const w = this.width / 2
+        this.context.lineWidth = 5
+        this.context.arc(w, w, w, 0, 2 * Math.PI)
+        this.context.strokeStyle = 'white'
+        this.context.stroke()
+      }
     },
   })
 }

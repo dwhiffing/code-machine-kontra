@@ -19,7 +19,15 @@ export default (opts) => {
     },
     render: function () {
       this.context.drawImage(led, 0, 0)
+      this.context.lineWidth = 5
       if (this.value) this.context.drawImage(glow, offset, offset)
+      if (this.selected) {
+        this.context.beginPath()
+        const w = this.width / 2
+        this.context.arc(w, w, w, 0, 2 * Math.PI)
+        this.context.strokeStyle = 'white'
+        this.context.stroke()
+      }
     },
   })
 }

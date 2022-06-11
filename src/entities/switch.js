@@ -9,15 +9,19 @@ export default (opts) => {
     height: size,
     value: 0,
     onDown: function () {
-      if (this.editable) return
+      if (!this.interactable) return
       this.value = this.value ? 0 : 1
     },
     render: function () {
       this.context.fillStyle = this.value ? 'white' : '#333'
-      this.context.lineWidth = 2
       this.context.beginPath()
       this.context.arc(size / 2, size / 2, size / 2, 0, 2 * Math.PI)
       this.context.fill()
+      if (this.selected) {
+        this.context.lineWidth = 5
+        this.context.strokeStyle = 'white'
+        this.context.stroke()
+      }
     },
   })
 }

@@ -1,13 +1,23 @@
 import guify from 'guify'
+import { onPointer } from 'kontra'
 import { createEntityByType } from '../entities'
 
 export default (space, showGUI = false) => {
   let components = []
   const enable = () => {
-    space.entities.forEach(
-      (c) => (c.editable = space.mode === (c.type === 'wire' ? 2 : 1)),
-    )
+    space.entities.forEach((c) => {
+      c.editable = space.mode === (c.type === 'wire' ? 2 : 1)
+      c.selected = false
+      c.interactable = space.mode === 0
+    })
   }
+
+  onPointer('up', function (e, object) {
+    if (space.mode !== 0)
+      space.entities.forEach((c) => {
+        if (object !== c) c.selected = false
+      })
+  })
   let gui
   if (showGUI) {
     const root = document.getElementById('gui')

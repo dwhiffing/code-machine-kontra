@@ -44,14 +44,15 @@ export default (space) => {
   const render = () => {
     space.entities.forEach((c) => {
       c.render()
-      if (space.debug) drawDebug(c)
+      if (space.debug) {
+        if (space.mode === 1) drawDebug(c)
+        if (space.mode === 2 && c.type === 'wire') drawDebug(c)
+      }
     })
   }
 
-  const pointerUp = (e) => space.entities.forEach((c) => c?.onUp(e))
   const pointerMove = (e) => space.entities.forEach((c) => c?.onMove(e))
   document.addEventListener('pointermove', pointerMove)
-  document.addEventListener('pointerup', pointerUp)
 
   return {
     addEntity,
@@ -59,7 +60,6 @@ export default (space) => {
     render,
     shutdown: () => {
       document.removeEventListener('pointermove', pointerMove)
-      document.removeEventListener('pointerup', pointerUp)
     },
   }
 }
