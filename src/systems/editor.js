@@ -45,6 +45,16 @@ export default (space, showGUI = false) => {
       enable()
       return
     }
+    if (e.key === 'Backspace') {
+      const selected = space.entities.filter((c) => c.selected)
+      selected.forEach((e) => {
+        const connectedWires = space.entities.filter((c) =>
+          c.key.match(new RegExp(`${e.key}`)),
+        )
+        connectedWires.forEach((t) => space.removeEntity(t))
+        space.removeEntity(e)
+      })
+    }
     if (space.mode === 0) return
     let entity
     if (e.key === '1') {
@@ -61,6 +71,7 @@ export default (space, showGUI = false) => {
 
   document.addEventListener('keydown', keydown)
 
+  const removeEntity = (entity) => {}
   const addEntity = (entity) => {
     entity.editable = space.mode > 0
     const coords = ['x', 'y']
@@ -98,6 +109,7 @@ export default (space, showGUI = false) => {
     update: (time) => {},
     render: (time) => {},
     addEntity,
+    removeEntity,
     shutdown: () => {
       components.forEach((c) => gui.Remove(c))
       document.getElementById('gui').innerHTML = ''

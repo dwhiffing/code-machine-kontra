@@ -37,11 +37,19 @@ export default (opts) =>
     onUp: function (event) {
       opts.onUp?.call(this, event)
       if (this.editable) {
-        this.selected = !this.selected
+        const diffPos = {
+          x: this._clickPos.x - event.offsetX,
+          y: this._clickPos.y - event.offsetY,
+        }
+        const diff = Math.abs(diffPos.x) + Math.abs(diffPos.y)
+        if (diff === 0) {
+          this.selected = !this.selected
+        }
       }
       this.clickPos = null
     },
     onDown: function (event) {
+      this._clickPos = { x: event.offsetX, y: event.offsetY }
       opts.onDown?.call(this, event)
 
       const scale = window.innerWidth / this.context.canvas.width

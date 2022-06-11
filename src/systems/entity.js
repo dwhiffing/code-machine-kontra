@@ -1,34 +1,43 @@
-import { track } from 'kontra'
+import { track, untrack } from 'kontra'
 
 export default (space) => {
-  const graph = new Map()
-
+  let graph = new Map()
+  const resetWires = () => {
+    graph = new Map()
+    space.entities.forEach((e) => {
+      if (e.type !== 'wire') {
+        graph.set(e.key, [])
+      }
+    })
+    space.entities.forEach((e) => {
+      if (e.type === 'wire') {
+        graph.get(e.input.key)?.push(e.output.key)
+        graph.get(e.output.key)?.push(e.input.key)
+      }
+    })
+  }
   const addEntity = (entity) => {
     track(entity)
-    space.entities = space.entities.sort((a, b) =>
-      a.type === 'wire' ? -1 : b.type === 'wire' ? 1 : 0,
-    )
+    resetWires()
+  }
 
-    if (entity.type === 'wire') {
-      graph.get(entity.input.key).push(entity.output.key)
-      graph.get(entity.output.key).push(entity.input.key)
-    } else {
-      graph.set(entity.key, [])
-    }
+  const removeEntity = (entity) => {
+    untrack(entity)
+    resetWires()
   }
 
   const checkPower = () => {
     const path =
       dfs(graph)?.map((k) => space.entities.find((e) => e.key === k)) || []
-    const broken = path.some((node) => node.type === 'switch' && !node.value)
+    const broken = path.some((node) => node?.type === 'switch' && !node.value)
 
     path.forEach((node, i) => {
       if (node && node.type !== 'switch' && node.type !== 'cell') {
         node.value = broken ? 0 : 1
       }
-      if (i > 0) {
-        const connectionKey = `wire-${path[i - 1].key}:${node.key}`
-        const wire = space.entities.find((e) => e.key === connectionKey)
+      if (i > 0 && node && path[i - 1]) {
+        const wireKey = `wire-${path[i - 1].key}:${node.key}`
+        const wire = space.entities.find((e) => e.key === wireKey)
         wire.value = broken ? 0 : 1
       }
     })
@@ -42,12 +51,10 @@ export default (space) => {
   }
 
   const render = () => {
+    if (!space.debug) return
     space.entities.forEach((c) => {
-      c.render()
-      if (space.debug) {
-        if (space.mode === 1) drawDebug(c)
-        if (space.mode === 2 && c.type === 'wire') drawDebug(c)
-      }
+      if (space.mode === 1) drawDebug(c)
+      if (space.mode === 2 && c.type === 'wire') drawDebug(c)
     })
   }
 
@@ -56,6 +63,7 @@ export default (space) => {
 
   return {
     addEntity,
+    removeEntity,
     update,
     render,
     shutdown: () => {
