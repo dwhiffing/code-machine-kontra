@@ -1,4 +1,3 @@
-import { angleToTarget } from 'kontra'
 import createEntityFactory from './base'
 
 export default (opts) =>
@@ -12,11 +11,6 @@ export default (opts) =>
     }),
     update: function () {
       const { diffX, diffY } = this.getDiff()
-      const angle = angleToTarget(
-        { x: this.x, y: this.y },
-        { x: opts.output.x, y: opts.output.y },
-      )
-      this.world.rotation = angle
       const size = 20
       this.width = size
       this.height = size

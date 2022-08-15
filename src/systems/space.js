@@ -7,6 +7,8 @@ export default () => {
       a.type === 'wire' ? -1 : b.type === 'wire' ? 1 : 0,
   })
 
+  scene.camera.x += 200
+
   return {
     mode: 0,
     debug: true,
